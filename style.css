@@ -1,0 +1,7 @@
+input[type="radio"]:checked + label {
+    background-color: #cfe2ff; /* Light blue highlight */
+    border: 2px solid #0d6efd;
+}
+label {
+    cursor: pointer;
+}
