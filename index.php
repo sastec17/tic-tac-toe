@@ -87,34 +87,36 @@
 ?>
 <h2 class="text-center">Player <?php echo $_SESSION['game']->turn ?>'s Turn</h2>
 <div class="d-flex justify-content-center">
-    <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST">
-        <?php foreach($_SESSION['game']->board as $row_ind=>$row): ?>
-            <div class="d-flex justify-content-center">
-                <?php foreach($row as $col_ind=>$square): 
-                    $posValue = "{$row_ind},{$col_ind}";
-                    ?> 
-                    <div class='border border-dark d-flex justify-content-center align-items-center' style="width: 100px; height: 100px;">
-                        <?php if ($square == ''): ?> 
-                            <input type="radio" name="position" value="<?php echo $posValue ?>" id="<?php echo $posValue ?>" class="d-none">
-                            <label for="<?php echo $posValue ?>" class="w-100 h-100 d-flex justify-content-center align-items-center text-center"></label>
-                            <?php else: ?>
-                            <span class="fs-3"><?php echo $square ?></span>
+    <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center">
+        <div>
+            <?php foreach($_SESSION['game']->board as $row_ind=>$row): ?>
+                <div class="d-flex justify-content-center">
+                    <?php foreach($row as $col_ind=>$square): 
+                        $posValue = "{$row_ind},{$col_ind}";
+                        ?> 
+                        <div class='border border-dark d-flex justify-content-center align-items-center' style="width: 100px; height: 100px;">
+                            <?php if ($square == ''): ?> 
+                                <input type="radio" name="position" value="<?php echo $posValue ?>" id="<?php echo $posValue ?>" class="d-none">
+                                <label for="<?php echo $posValue ?>" class="w-100 h-100 d-flex justify-content-center align-items-center text-center"></label>
+                                <?php else: ?>
+                                <span class="fs-3"><?php echo $square ?></span>
 
-                        <?php endif; ?>
-                    </div>
-                <?php  endforeach ?>
-            </div>
-        <?php  endforeach ?>
-        <input type="submit" value="Submit Turn" name="submit">
+                            <?php endif; ?>
+                        </div>
+                    <?php  endforeach ?>
+                </div>
+            <?php  endforeach ?>
+        </div>
+        <button type="submit" value="Submit Turn" name="submit" class="btn btn-primary mt-3">Submit</button>
     </form>
 </div>
 <?php if ($_SESSION['game']->verdict === 'W'): ?>
-    <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-success" style="position: relative; top: -50vh; min-height: 50vh;">
+    <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-success" style="position: relative; top: -60vh; min-height: 60vh;">
         <h1 class="text-center w-75 mb-5" style="z-index:100;">PLAYER <?php echo $_SESSION['game']->turn; ?> WON!! </h1>
         <input type="submit" value="Restart" name="restart">
     </form>
     <?php elseif ($_SESSION['game']->verdict === 'T'): ?>
-        <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-primary" style="position: relative; top: -50vh; min-height: 50vh;">
+        <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-primary" style="position: relative; top: -60vh; min-height: 60vh;">
             <h1 class="text-center w-75 mb-5" style="z-index:100;">CAT'S GAME</h1>
             <input type="submit" value="Restart" name="tie">
         </form>
