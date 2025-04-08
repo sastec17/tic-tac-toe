@@ -6,7 +6,9 @@
     class Game {
         public $board;
         public $turn;
-        public $won;
+        public $verdict;
+        // Save time
+        public $numTurns;
         public function __construct()
         {
             $this->board = [
@@ -15,31 +17,39 @@
                 ['', '', '']
             ];
             $this->turn = 'X';
-            $this->won = false;
+            $this->verdict = '';
+            $this->numTurns = 1;
         }
     }
 
     session_start();
     // To prevent errors before submitting - Check if submitted
     if(isset($_POST['submit'])) {
-        // Extract indices
-        $indices = explode(',', $_POST['position']);
-        $row = (int) $indices[0];
-        $col = (int) $indices[1];
-        // TODO - VALIDATE POSITION SELECTED
-        $turn = $_SESSION['game']->turn;
-        $_SESSION['game']->board[$row][$col] = $turn == 'X' ? 'X' : 'O';
-        
-        // Check logic & trigger overlay
-        if (isWinner($row, $col)) {
-            $_SESSION['game']->won = true;
-        } else {
-            // Take turns
-            $_SESSION['game']->turn = $turn == 'X' ? 'O' : 'X';
+        // Validate position selected
+        if (!key_exists('position' ,$_POST)) {
+            echo "<p style='color:red;' class='text-center'>Please select a square</p>";
         }
-
+        else {
+            // Extract indices
+            $indices = explode(',', $_POST['position']);
+            $row = (int) $indices[0];
+            $col = (int) $indices[1];
+            $turn = $_SESSION['game']->turn;
+            $_SESSION['game']->board[$row][$col] = $turn == 'X' ? 'X' : 'O';
+            
+            // Check logic & trigger overlay
+            if (isWinner($row, $col)) {
+                $_SESSION['game']->verdict = 'W';
+            } elseif (isTie()) {
+                $_SESSION['game']->verdict = 'T';
+            } else {
+                // Take turns
+                $_SESSION['game']->turn = $turn == 'X' ? 'O' : 'X';
+                $_SESSION['game']->numTurns += 1;
+            }
+        }
     } else {
-        // store session
+        // create and store session
         $_SESSION['game'] = new Game();
     }
 
@@ -69,6 +79,11 @@
         }
         return false;
     }
+
+    function isTie() {
+        return $_SESSION['game']->numTurns === 9;
+    }
+
 ?>
 <h2 class="text-center">Player <?php echo $_SESSION['game']->turn ?>'s Turn</h2>
 <div class="d-flex justify-content-center">
@@ -93,10 +108,16 @@
         <input type="submit" value="Submit Turn" name="submit">
     </form>
 </div>
-<?php if ($_SESSION['game']->won): ?>
+<?php if ($_SESSION['game']->verdict === 'W'): ?>
     <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-success" style="position: relative; top: -50vh; min-height: 50vh;">
-        <h1 class="text-center w-75 mb-5" style="z-index">PLAYER <?php echo $_SESSION['game']->turn; ?> WON!! </h1>
+        <h1 class="text-center w-75 mb-5" style="z-index:100;">PLAYER <?php echo $_SESSION['game']->turn; ?> WON!! </h1>
         <input type="submit" value="Restart" name="restart">
     </form>
+    <?php elseif ($_SESSION['game']->verdict === 'T'): ?>
+        <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="POST" class="d-flex flex-column justify-content-center align-items-center bg-primary" style="position: relative; top: -50vh; min-height: 50vh;">
+            <h1 class="text-center w-75 mb-5" style="z-index:100;">CAT'S GAME</h1>
+            <input type="submit" value="Restart" name="tie">
+        </form>
 <?php endif ?>
+
 <?php include 'components/footer.php'; ?>

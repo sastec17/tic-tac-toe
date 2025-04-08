@@ -5,6 +5,7 @@ After completing my initial tutorial in PHP, I sought out mini-projects to apply
 Here, I had the opportunity to practice:
 * Sessions
 * Arrays
+* Form handling & validation
 * HTML/CSS/Bootstrap
 
 Additional styling and error handling coming soon!
